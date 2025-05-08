@@ -42,7 +42,15 @@ pipeline{
         stage('Deploy'){
             steps{
                 script{
-                    bat "docker run -d --name `${CONTAINER_NAME}-${BUILD_NUMBER}`${IMAGE_NAME}:${BUILD_NUMBER}"
+                     def containerFullName = "cicd_test"
+                    bat """
+            docker ps -a -q --filter "name=^/${containerFullName}$" | findstr . >nul
+            if %errorlevel%==0 (
+                docker stop ${containerFullName}
+                docker rm ${containerFullName}
+            )
+            docker run -d --name ${containerFullName} ${IMAGE_NAME}:${BUILD_NUMBER}
+            """
                 }
             }
         }
