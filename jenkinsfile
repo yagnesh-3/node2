@@ -39,21 +39,21 @@ pipeline{
             }
         }
 
-        stage('Deploy'){
-            steps{
-                script{
-                     def containerFullName = "cicd_test"
-                    bat """
-            docker ps -a -q --filter "name=^/${containerFullName}$" | findstr . >nul
+       stage('Deploy') {
+    steps {
+        script {
+            bat """
+            docker ps -a -q --filter "name=^/cicd_test\\$" | findstr . >nul
             if %errorlevel%==0 (
-                docker stop ${containerFullName}
-                docker rm ${containerFullName}
+                docker stop cicd_test
+                docker rm cicd_test
             )
-            docker run -d --name ${containerFullName} ${IMAGE_NAME}:${BUILD_NUMBER}
+            docker run -d --name cicd_test ${IMAGE_NAME}:${BUILD_NUMBER}
             """
-                }
-            }
         }
+    }
+}
+
 
     }
     post{
