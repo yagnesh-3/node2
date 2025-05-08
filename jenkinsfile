@@ -1,9 +1,9 @@
 pipeline{
     agent any
     environment{
-        IMAGE_NAME : 'yagnesh4152/q3'
-        DOCKER_CRED: 'Dockerhub'
-        CONTAINER_NAME: 'CItest'
+        IMAGE_NAME = 'yagnesh4152/q3'
+        DOCKER_CRED = 'Dockerhub'
+        CONTAINER_NAME = 'CItest'
     }
     stages{
         stage('checkout'){
