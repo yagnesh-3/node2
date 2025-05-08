@@ -43,7 +43,7 @@ pipeline{
     steps {
         script {
             bat """
-            docker ps -a -q --filter "name=^/cicd_test\\$" | findstr . >nul
+            docker ps -a -q --filter "name=cicd_test" | findstr . >nul
             if %errorlevel%==0 (
                 docker stop cicd_test
                 docker rm cicd_test
