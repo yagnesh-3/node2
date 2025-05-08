@@ -48,7 +48,7 @@ pipeline{
                 docker stop cicd_test
                 docker rm cicd_test
             )
-            docker run -d --name cicd_test ${IMAGE_NAME}:${BUILD_NUMBER}
+            docker run -d --name cicd_test -p 8089:3000 ${IMAGE_NAME}:${BUILD_NUMBER}
             """
         }
     }
