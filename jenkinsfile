@@ -1,0 +1,59 @@
+pipeline{
+    agent any
+    environment{
+        IMAGE_NAME : 'yagnesh4152/q3'
+        DOCKER_CRED: 'Dockerhub'
+        CONTAINER_NAME: 'CItest'
+    }
+    stages{
+        stage('checkout'){
+            steps{
+                checkout scm
+            }
+        }
+
+        stage('Build Docker image'){
+            steps{
+                script{
+                    echo 'Building Docker image...'
+                    bat "docker build -t ${IMAGE_NAME}:${BUILD_NUMBER}"
+                }
+            }
+        }
+
+        stage('Login to docker hub'){
+            steps{
+                steps {
+                withCredentials([usernamePassword(credentialsId: 'Dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    bat "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+                }
+            }
+            }
+        }
+
+        stage('push image to docker hub'){
+            steps{
+                script{
+                    bat "docker push ${IMAGE_NAME}:${BUILD_NUMBER}"
+                }
+            }
+        }
+
+        stage('Deploy'){
+            steps{
+                script{
+                    bat "docker run -d --name `${CONTAINER_NAME}-${BUILD_NUMBER}`${IMAGE_NAME}:${BUILD_NUMBER}"
+                }
+            }
+        }
+
+    }
+    post{
+        success{
+            echo "Pipe line sucess"
+        }
+        failure{
+            echo "pipeline failed"
+        }
+    }
+}
